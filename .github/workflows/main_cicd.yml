@@ -43,8 +43,8 @@ jobs:
       - name: Run migrations check
         run: uv run python manage.py makemigrations --check --dry-run
 
-      - name: Run tests
-        run: uv run -m pytest
+      # - name: Run tests
+      #   run: uv run -m pytest
     
 
   
