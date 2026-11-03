@@ -1,0 +1,8 @@
+# these are the tools from git hub self, check weekly for new github action release , and create a pull request
+# will check it later
+# version: 2
+# updates:
+#   - package-ecosystem: "github-actions"
+#     directory: "/"
+#     schedule:
+#       interval: "weekly"

@@ -1,0 +1,50 @@
+name: Build and test CICD Pipelines.
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Setup test Environment and test
+    runs-on: ubuntu-latest
+    
+    steps:
+      # নিজের repo-র কোড GitHub-এর অস্থায়ী মেশিনে আনো
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # .python-version ফাইল থেকে Python ভার্সন পড়ে install করো
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version-file: ".python-version"
+
+      # নির্দিষ্ট ভার্সনের uv install করো
+      - name: Installing UV
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.13.6"
+
+      # uv.lock অনুযায়ী সব dependency install (dev সহ, কারণ pytest লাগবে)
+      - name: Installing the project
+        run: uv sync --locked --no-dev
+
+      # এখন lint বন্ধ আছে, পরে চালু করতে চাইলে নিচের দুই লাইন খুলো
+      # - name: Run the Linter
+      #   run: uv run ruff check .
+
+      # model বদলেছে কিন্তু migration বানানো হয়নি, এমন ভুল ধরবে
+      - name: Run migrations check
+        run: uv run python manage.py makemigrations --check --dry-run
+
+      - name: Run tests
+        run: uv run -m pytest
+    
+
+  
