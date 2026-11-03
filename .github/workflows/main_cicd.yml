@@ -42,6 +42,8 @@ jobs:
       # model বদলেছে কিন্তু migration বানানো হয়নি, এমন ভুল ধরবে
       - name: Run migrations check
         run: uv run python manage.py makemigrations --check --dry-run
+      - name: list file
+        run: ls 
 
       # - name: Run tests
       #   run: uv run -m pytest
