@@ -63,11 +63,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      # .python-version ফাইল থেকে Python ভার্সন পড়ে install করো
-      - name: Set up Python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
-        with:
-          python-version-file: ".python-version"
+      # .python-version ফাইল থেকে Python ভার্সন পড়ে install করো ekhane lagbe na test ei lagbe baki azure e set korea che
+      # - name: Set up Python
+      #   uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      #   with:
+      #     python-version-file: ".python-version"
 
       # নির্দিষ্ট ভার্সনের uv install করো
       - name: Installing UV
@@ -103,11 +103,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      # .python-version ফাইল থেকে Python ভার্সন পড়ে install করো
-      - name: Set up Python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
-        with:
-          python-version-file: ".python-version"
+      # .python-version ফাইল থেকে Python ভার্সন পড়ে install করো same lagbe na 
+      # - name: Set up Python
+      #   uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      #   with:
+      #     python-version-file: ".python-version"
 
       # নির্দিষ্ট ভার্সনের uv install করো
       - name: Installing UV
