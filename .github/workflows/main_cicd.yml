@@ -13,6 +13,11 @@ jobs:
   test:
     name: Setup test Environment and test
     runs-on: ubuntu-latest
+    # for test we can add dummy env directly
+    env:
+      DEBUG: "False"
+      SECRET_KEY: "test_secretkey_dummy"
+      DATABASE_URL: ""
     
     steps:
       # নিজের repo-র কোড GitHub-এর অস্থায়ী মেশিনে আনো
@@ -47,6 +52,80 @@ jobs:
 
       # - name: Run tests
       #   run: uv run -m pytest
-    
+  deploy-staging:
+    name: Deploy to staging.
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      # নিজের repo-র কোড GitHub-এর অস্থায়ী মেশিনে আনো
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-  
+      # .python-version ফাইল থেকে Python ভার্সন পড়ে install করো
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version-file: ".python-version"
+
+      # নির্দিষ্ট ভার্সনের uv install করো
+      - name: Installing UV
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.13.6"
+        # uv.lock থেকে Azure-এর (pip) জন্য requirements.txt
+      - name: Export requirements.txt
+        run: uv export --frozen --no-dev --no-hashes -o requirements.txt
+      
+      #! Azure code gose here
+      # - name: Azure login
+      #   uses: azure/login@v2
+      #   with:
+      #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
+      #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+      #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # - name: Deploy to Azure Web App
+      #   uses: azure/webapps-deploy@v3
+      #   with:
+      #     app-name: my-staging-app   # আপনার staging app-এর নাম
+      #     package: .
+
+  deploy-prod:
+    name: Deploy to production
+    needs: deploy-staging
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      # নিজের repo-র কোড GitHub-এর অস্থায়ী মেশিনে আনো
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # .python-version ফাইল থেকে Python ভার্সন পড়ে install করো
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version-file: ".python-version"
+
+      # নির্দিষ্ট ভার্সনের uv install করো
+      - name: Installing UV
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.13.6"
+        # uv.lock থেকে Azure-এর (pip) জন্য requirements.txt
+      - name: Export requirements.txt
+        run: uv export --frozen --no-dev --no-hashes -o requirements.txt
+      # - name: Azure login
+      #   uses: azure/login@v2
+      #   with:
+      #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
+      #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+      #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # - name: Deploy to Azure Web App
+      #   uses: azure/webapps-deploy@v3
+      #   with:
+      #     app-name: my-prod-app   # আপনার prod app-এর নাম
+      #     package: .
